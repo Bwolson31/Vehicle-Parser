@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; 
+}
+
+#vehicleTextBox, #vehicleOutputBox {
+    flex: 1;
+    margin: 5px;
+    padding: 100px; 
+    resize: none; 
+}
+
+#vehicleTextBox {
+    border: 1px solid black;
+    overflow-y: auto; 
+    min-height: 40px; 
+}
+
+#vehicleOutputBox {
+    border: 1px solid black;
+    display: block; 
+    min-height: 40px; 
+    white-space: pre-wrap; 
+    overflow-y: auto; 
+}
+
