@@ -17,18 +17,20 @@ function cleanPDFText(text) {
 function formatOwnerName(rawName) {
     rawName = rawName.trim();
 
-    // Remove titles (Mr., Miss., Ms., Dr., Prof., etc.)
-    rawName = rawName.replace(/^(Mr\.?|Mrs\.?|Miss\.?|Ms\.?|Dr\.?|Prof\.?)\s+/i, '');
-
-    // If name is in "Last, First Middle" format, convert it
+    // If name is in "Last, Title First Middle" format
     if (rawName.includes(",")) {
         let parts = rawName.split(",");
-        let lastName = parts[0].trim();
-        let firstMiddle = parts[1].trim();
+        let lastName = parts[0].trim(); // Last name before the comma
+        let firstMiddle = parts[1].trim(); // Everything after the comma
+
+        // Remove titles like "MR.", "MRS.", "DR."
+        firstMiddle = firstMiddle.replace(/^(MR\.?|MRS\.?|MISS\.?|MS\.?|DR\.?|PROF\.?)\s+/i, '');
+
         return `${firstMiddle} ${lastName}`; // Convert to "First Middle Last"
     }
 
-    return rawName; // If already "First Middle Last", return as is
+    // If already "First Middle Last", just return it
+    return rawName;
 }
 
 
@@ -38,8 +40,8 @@ function formatVehicleData(entry) {
     // Regex Patterns
     const addressRegex = /(\d+ [A-Z]+ \s*[A-Z0-9\s]*,\s*[A-Z]+,\s*[A-Z]{2}\s*\d{5})/g;
     const vinRegex = /VIN: ([A-HJ-NPR-Z0-9]{17})/g;
-    const ownerRegex = /Registered Owner:\s*([\w\s.'/-]+)(?:\(|\n|$)/g;
-    const secondaryOwnerRegex = /Secondary Owner:\s*([\w\s.'/-]+)(?:\(|\n|$)/g;       
+    const ownerRegex = /Registered Owner:\s*([\w\s.,'-]+)(?:\(|\n|$)/g;
+    const secondaryOwnerRegex = /Secondary Owner:\s*([\w\s.,'-]+)(?:\(|\n|$)/g;
     const licensePlateRegex = /License Plate: (\w+)/g;
     const plateStateRegex = /Plate Registration State: (\w+)/g;
     const plateExpRegex = /Plate Expiration: (\d{1,2}\/\d{1,2}\/(\d{4}))/g;
@@ -72,6 +74,7 @@ function formatVehicleData(entry) {
             let secondaryName = formatOwnerName(secondaryOwners[i][1]);
             entryFormatted += `Secondary Owner: ${secondaryName}\n`;
         }
+        
         
 
         if (vins[i]) {
