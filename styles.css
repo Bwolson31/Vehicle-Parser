@@ -1,27 +1,83 @@
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Main Container */
 .container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    margin: auto; 
+}
+
+/* Labels */
+label {
+    font-size: 18px;
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    text-align: left; 
+}
+
+/* Dropdown */
+select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* Textarea & Output */
+textarea, output {
+    width: 100%; 
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    box-sizing: border-box; 
+}
+
+textarea {
+    min-height: 180px;
+    resize: vertical;
+}
+
+output {
+    background: #f9f9f9;
+    min-height: 150px;
+    display: block;
+    white-space: pre-wrap;
+    overflow-y: auto;
+}
+
+/* Button Styling */
+.button-container {
     display: flex;
     justify-content: space-between;
-    width: 100%; 
+    margin-top: 15px;
 }
 
-#vehicleTextBox, #vehicleOutputBox {
+button {
     flex: 1;
+    padding: 12px;
     margin: 5px;
-    padding: 100px; 
-    resize: none; 
+    font-size: 18px;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
-#vehicleTextBox {
-    border: 1px solid black;
-    overflow-y: auto; 
-    min-height: 40px; 
+button:hover {
+    background-color: #0056b3;
 }
-
-#vehicleOutputBox {
-    border: 1px solid black;
-    display: block; 
-    min-height: 40px; 
-    white-space: pre-wrap; 
-    overflow-y: auto; 
-}
-

@@ -3,25 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Vehicle Data Parser</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <span>
-       <label for="backgroundOptions">Background:</label>
-       <select name="Background" id="backgroundOptions"> 
-           <option value="CLEAR">CLEAR</option>
-           <option value="Delvepoint">Delvepoint</option>
-       </select>
-    </span>
+
     <div class="container">
-        <textarea id="vehicleTextBox" placeholder="Enter Background information here"></textarea>
+        <h2>Vehicle Data Parser</h2>
+
+        <label for="backgroundOptions">Select Background Source:</label>
+        <select name="Background" id="backgroundOptions"> 
+            <option value="CLEAR">CLEAR</option>
+            <option value="Delvepoint">Delvepoint</option>
+        </select>
+
+        <!-- User Input Section -->
+        <label for="vehicleTextBox">Paste Raw Vehicle Data:</label>
+        <textarea id="vehicleTextBox" placeholder="Paste your background information here"></textarea>
+
+        <!-- Output Section -->
+        <label for="vehicleOutputBox">Formatted Output:</label>
         <output id="vehicleOutputBox"></output>
-    </div>
-    <div>
-        <button>Submit</button>
+
+        <!-- Button Section -->
+        <div class="button-container">
+            <button id="submitButton">Submit</button>
+            <button id="copyButton">Copy</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
