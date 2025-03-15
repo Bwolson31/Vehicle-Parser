@@ -41,7 +41,7 @@ function formatVehicleData(entry) {
     entry = cleanPDFText(entry);
 
     // Regex Patterns
-    const addressRegex = /(\d+ [A-Z]+ \s*[A-Z0-9\s]*,\s*[A-Z]+,\s*[A-Z]{2}\s*\d{5})/g;
+    const addressRegex = /(\d+\s[\w\s#&.-]+,\s*[\w\s]+,\s*[A-Z]{2}\s*\d{5})/g;
     const vinRegex = /VIN: ([A-HJ-NPR-Z0-9]{17})/g;
     const ownerRegex = /Registered Owner:\s*([\w\s\/.]+?),\s*([\w\s.]+)/g;
     const secondaryOwnerRegex = /Secondary Owner:\s*([\w\s\/.]+?),\s*([\w\s.]+)/g;    
