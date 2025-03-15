@@ -14,9 +14,23 @@ function cleanPDFText(text) {
         .trim();  
 }
 
-function formatName(last, first, middle) {
-    return middle ? `${first} ${middle} ${last}`.trim() : `${first} ${last}`;
+function formatOwnerName(rawName) {
+    rawName = rawName.trim();
+
+    // Remove titles (Mr., Miss., Ms., Dr., Prof., etc.)
+    rawName = rawName.replace(/^(Mr\.?|Mrs\.?|Miss\.?|Ms\.?|Dr\.?|Prof\.?)\s+/i, '');
+
+    // If name is in "Last, First Middle" format, convert it
+    if (rawName.includes(",")) {
+        let parts = rawName.split(",");
+        let lastName = parts[0].trim();
+        let firstMiddle = parts[1].trim();
+        return `${firstMiddle} ${lastName}`; // Convert to "First Middle Last"
+    }
+
+    return rawName; // If already "First Middle Last", return as is
 }
+
 
 function formatVehicleData(entry) {
     entry = cleanPDFText(entry);
@@ -24,8 +38,8 @@ function formatVehicleData(entry) {
     // Regex Patterns
     const addressRegex = /(\d+ [A-Z]+ \s*[A-Z0-9\s]*,\s*[A-Z]+,\s*[A-Z]{2}\s*\d{5})/g;
     const vinRegex = /VIN: ([A-HJ-NPR-Z0-9]{17})/g;
-    const ownerRegex = /Registered Owner:\s*([\w-]+),\s*([\w-]+)\s*([\w.]*)/g;
-    const secondaryOwnerRegex = /Secondary Owner:\s*([\w-]+),\s*([\w-]+)\s*([\w.]*)/g;
+    const ownerRegex = /Registered Owner:\s*([\w\s.'/-]+)(?:\(|\n|$)/g;
+    const secondaryOwnerRegex = /Secondary Owner:\s*([\w\s.'/-]+)(?:\(|\n|$)/g;       
     const licensePlateRegex = /License Plate: (\w+)/g;
     const plateStateRegex = /Plate Registration State: (\w+)/g;
     const plateExpRegex = /Plate Expiration: (\d{1,2}\/\d{1,2}\/(\d{4}))/g;
@@ -48,17 +62,17 @@ function formatVehicleData(entry) {
         let plateExpirationYear = expirations[i] ? parseInt(expirations[i][2]) : null;
         let entryFormatted = `${makeModelYears[i][2]} ${makeModelYears[i][1].trim()} \n${addresses[i][1]}\n`;
 
-        // Format and include Registered Owner
+        
         if (owners[i]) {
-            let [_, last, first, middle] = owners[i];
-            entryFormatted += `RO: ${formatName(last, first, middle)}\n`;
+            let ownerName = formatOwnerName(owners[i][1]);
+            entryFormatted += `Registered Owner: ${ownerName}\n`;
         }
-
-        // Format and include Secondary Owner (if available)
+        
         if (secondaryOwners[i]) {
-            let [_, last, first, middle] = secondaryOwners[i];
-            entryFormatted += `Secondary Owner: ${formatName(last, first, middle)}\n`;
+            let secondaryName = formatOwnerName(secondaryOwners[i][1]);
+            entryFormatted += `Secondary Owner: ${secondaryName}\n`;
         }
+        
 
         if (vins[i]) {
             entryFormatted += `VIN: ${vins[i][1]}\n`;
@@ -67,7 +81,7 @@ function formatVehicleData(entry) {
             entryFormatted += `LP: ${licenses[i][1]}`;
         }
         if (states[i]) {
-            entryFormatted += ` - ${states[i][1]}`;
+            entryFormatted += `- ${states[i][1]}`;
         }
         if (expirations[i]) {
             entryFormatted += ` EXP: ${expirations[i][1]}\n`;
