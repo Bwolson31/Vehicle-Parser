@@ -26,12 +26,16 @@ function formatOwnerName(rawName) {
         // Remove titles like "MR.", "MRS.", "DR."
         firstMiddle = firstMiddle.replace(/^(MR\.?|MRS\.?|MISS\.?|MS\.?|DR\.?|PROF\.?)\s+/i, '');
 
-        return `${firstMiddle} ${lastName}`; // Convert to "First Middle Last"
+        // Remove "UNKNOWN" if present
+        firstMiddle = firstMiddle.replace(/\bUNKNOWN\b/i, "").trim();
+
+        return `${firstMiddle} ${lastName}`.trim(); // Convert to "First Middle Last"
     }
 
-    // If already "First Middle Last", just return it
-    return rawName;
+    // If already "First Middle Last", just remove "UNKNOWN" and return it
+    return rawName.replace(/\bUNKNOWN\b/i, "").trim();
 }
+
 
 
 function formatVehicleData(entry) {
@@ -67,14 +71,13 @@ function formatVehicleData(entry) {
         
         if (owners[i]) {
             let ownerName = formatOwnerName(owners[i][1]);
-            entryFormatted += `Registered Owner: ${ownerName}\n`;
+            entryFormatted += `RO: ${ownerName}\n`;
         }
         
-        if (secondaryOwners[i]) {
+        if (secondaryOwners[i] && secondaryOwners[i][1].trim()) {
             let secondaryName = formatOwnerName(secondaryOwners[i][1]);
             entryFormatted += `Secondary Owner: ${secondaryName}\n`;
-        }
-        
+        } 
         
 
         if (vins[i]) {
