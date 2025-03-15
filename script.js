@@ -43,8 +43,8 @@ function formatVehicleData(entry) {
     // Regex Patterns
     const addressRegex = /(\d+\s[\w\s#&.-]+,\s*[\w\s]+,\s*[A-Z]{2}\s*\d{5})/g;
     const vinRegex = /VIN: ([A-HJ-NPR-Z0-9]{17})/g;
-    const ownerRegex = /Registered Owner:\s*([\w\s\/.]+?),\s*([\w\s.]+)/g;
-    const secondaryOwnerRegex = /Secondary Owner:\s*([\w\s\/.]+?),\s*([\w\s.]+)/g;    
+    const ownerRegex = /Registered Owner:\s*([A-Z]+),\s*([A-Z]+(?:\s+[A-Z.]+)*)/g;
+    const secondaryOwnerRegex = /Secondary Owner:\s*([A-Z]+),\s*([A-Z]+(?:\s+[A-Z.]+)*)/g;      
     const licensePlateRegex = /License Plate: (\w+)/g;
     const plateStateRegex = /Plate Registration State: (\w+)/g;
     const plateExpRegex = /Plate Expiration: (\d{1,2}\/\d{1,2}\/(\d{4}))/g;
