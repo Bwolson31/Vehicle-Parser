@@ -14,46 +14,49 @@ function cleanPDFText(text) {
         .trim();  
 }
 
+// ✅ **Updated Function to Properly Format Owner Names**
 function formatOwnerName(rawName) {
+    if (!rawName) return ""; 
+
     rawName = rawName.trim();
+
+    // **Remove extra labels like (Individual & Owner)**
+    rawName = rawName.replace(/\(.*?\)/g, "").trim();
 
     if (rawName.includes(",")) {
         let parts = rawName.split(",");
-        let lastName = parts[0].trim(); // Last name before the comma
-        let firstMiddle = parts[1].trim(); // Everything after the comma
+        let lastName = parts[0].trim();
+        let firstMiddle = parts[1].trim();
 
-        // **Remove "Miss./Ms.", "Mr./Dr.", "Mrs./Prof."**
-        firstMiddle = firstMiddle.replace(/^(MR\.?|MRS\.?|MISS\.?|MS\.?|DR\.?|PROF\.?)\/(MR\.?|MRS\.?|MISS\.?|MS\.?|DR\.?|PROF\.?)\s+/i, '');
+        // **Remove any titles like "MR., MS., DR., etc."**
+        firstMiddle = firstMiddle.replace(/^(MR\.?|MRS\.?|MISS\.?|MS\.?|DR\.?|PROF\.?)\/?(MR\.?|MRS\.?|MISS\.?|MS\.?|DR\.?|PROF\.?)?\s+/i, '');
 
-        // Remove "UNKNOWN" if present
+        // **Remove "UNKNOWN"**
         firstMiddle = firstMiddle.replace(/\bUNKNOWN\b/i, "").trim();
 
         return `${firstMiddle} ${lastName}`.trim();
     }
 
-    return rawName.replace(/\bUNKNOWN\b/i, "").trim();
+    return rawName;
 }
-
-
-
 
 function formatVehicleData(entry) {
     entry = cleanPDFText(entry);
 
-    // Regex Patterns
+    // **Regex Patterns**
     const addressRegex = /(\d+\s[\w\s#&.-]+,\s*[\w\s]+,\s*[A-Z]{2}\s*\d{5})/g;
     const vinRegex = /VIN: ([A-HJ-NPR-Z0-9]{17})/g;
-    const ownerRegex = /Registered Owner:\s*([A-Z]+),\s*([A-Z]+(?:\s+[A-Z.]+)*)/g;
-    const secondaryOwnerRegex = /Secondary Owner:\s*([A-Z]+),\s*([A-Z]+(?:\s+[A-Z.]+)*)/g;      
+    const ownerRegex = /Registered Owner:\s*([\s\S]*?)(?:\(|\n|$)/g;  
+    const secondaryOwnerRegex = /Secondary Owner:\s*([\s\S]*?)(?:\(|\n|$)/g;  
     const licensePlateRegex = /License Plate: (\w+)/g;
     const plateStateRegex = /Plate Registration State: (\w+)/g;
     const plateExpRegex = /Plate Expiration: (\d{1,2}\/\d{1,2}\/(\d{4}))/g;
     const makeModelYearRegex = /Make\/Model\/Series:\s*(.+?)\s+Model Year:\s*(\d{4})/g;
 
     let formatted = '';
-    let expiredFormatted = ''; // Stores expired plates separately
+    let expiredFormatted = '';
 
-    // Extract all data matches
+    // **Extract All Matches**
     let addresses = [...entry.matchAll(addressRegex)];
     let vins = [...entry.matchAll(vinRegex)];
     let owners = [...entry.matchAll(ownerRegex)];
@@ -67,17 +70,17 @@ function formatVehicleData(entry) {
         let plateExpirationYear = expirations[i] ? parseInt(expirations[i][2]) : null;
         let entryFormatted = `${makeModelYears[i][2]} ${makeModelYears[i][1].trim()} \n${addresses[i][1]}\n`;
 
-        
-        if (owners[i]) {
+        // ✅ **Owner now appears correctly**
+        if (owners[i] && owners[i][1].trim()) {
             let ownerName = formatOwnerName(owners[i][1]);
             entryFormatted += `RO: ${ownerName}\n`;
         }
-        
+
+        // ✅ **Fix Secondary Owner - Only If Exists**
         if (secondaryOwners[i] && secondaryOwners[i][1].trim()) {
             let secondaryName = formatOwnerName(secondaryOwners[i][1]);
             entryFormatted += `Secondary Owner: ${secondaryName}\n`;
-        } 
-        
+        }
 
         if (vins[i]) {
             entryFormatted += `VIN: ${vins[i][1]}\n`;
@@ -94,7 +97,7 @@ function formatVehicleData(entry) {
 
         entryFormatted += '\n';
 
-        // **Expiration Logic**: Anything before 2023 = Expired, otherwise Current
+        // **Expiration Logic**: **Before 2023 = Expired, otherwise Current**
         if (plateExpirationYear && plateExpirationYear < 2023) {
             expiredFormatted += entryFormatted;
         } else {
@@ -102,7 +105,7 @@ function formatVehicleData(entry) {
         }
     }
 
-    // Append expired plates under "**Expired Tags**"
+    // ✅ **Append Expired Plates Under "Expired Tags"**
     if (expiredFormatted) {
         formatted += `\n**Expired Tags**\n${expiredFormatted}`;
     }
@@ -116,7 +119,7 @@ function formatVehicleData(entry) {
     }
 }
 
-// Event listener for the submit button
+// **Event Listener for Submit Button**
 submitButton.addEventListener('click', function () {
     const userInput = vehicleTextBox.value;
     console.log("Submitting this input:", userInput);
@@ -124,7 +127,7 @@ submitButton.addEventListener('click', function () {
     vehicleOutputBox.textContent = changedInput;
 });
 
-// Copy Button Functionality
+// **Copy Button Functionality**
 copyButton.addEventListener('click', function () {
     const output = vehicleOutputBox.textContent.trim();
 
